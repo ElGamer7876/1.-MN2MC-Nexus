@@ -35,6 +35,13 @@ mc:
   chunk_transport: auto  # auto=自动检测, kren=共享内存(快), tcp=TCP(兼容)
   kren_buffer_size: 10485760  # KREN 共享内存缓冲区大小(字节), 默认10MB
 
+nexus:
+  region_mode: auto # Select region only: does not log in
+  region_accounts: {} # Region to account aliases; NO passwords
+  auto_expand_rooms: false # Requires authorized verified room provider
+  room_capacity: 40
+  plugins: [] # Trusted local modules only
+
 debug: false
 
 """
@@ -75,9 +82,18 @@ class MCConfig(BaseModel):
     kren_buffer_size: int = Field(default=10485760, ge=1024, le=104857600)
 
 
+class NexusConfig(BaseModel):
+    region_mode: Literal["auto", "overseas", "usz", "hkz", "jpz"] = "auto"
+    region_accounts: dict[str, list[str]] = Field(default_factory=dict)
+    auto_expand_rooms: bool = False
+    room_capacity: int = Field(default=40, ge=1, le=40)
+    plugins: list[str] = Field(default_factory=list)
+
+
 class AppConfig(BaseModel):
     mini: MiniConfig = MiniConfig()
     mc: MCConfig = MCConfig()
+    nexus: NexusConfig = Field(default_factory=NexusConfig)
     debug: bool = False
 
 
@@ -112,6 +128,10 @@ class ConfigManager:
         return self._config.mc
 
     @property
+    def nexus(self) -> NexusConfig:
+        return self._config.nexus
+
+    @property
     def debug(self) -> bool:
         return self._config.debug
 
@@ -138,11 +158,12 @@ class ConfigManager:
 config = ConfigManager()
 
 # Sentinel names that __getattr__ proxies to the singleton.
-_CONFIG_ATTRS = frozenset({"mini", "mc", "debug", "load", "save"})
+_CONFIG_ATTRS = frozenset({"mini", "mc", "nexus", "debug", "load", "save"})
 
 if TYPE_CHECKING:
     mini: MiniConfig
     mc: MCConfig
+    nexus: NexusConfig
     debug: bool
     def load(path: Path = ...) -> None: ...
     def save(path: Path | None = ...) -> None: ...

@@ -22,6 +22,7 @@ from mn2mc.mini.packet import (
     reset_events as mini_reset_events,
 )
 from mn2mc.mini.player import MiniPlayer, get_players_snapshot
+from mn2mc.nexus.extensions import transform_chat
 
 # Per-player cooldown for /mn2mc commands (seconds)
 _command_cooldowns: dict[int, float] = {}
@@ -124,7 +125,9 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                         "Usage: /mn2mc skin list | /mn2mc skin set <name> <id> | /mn2mc skin remove <name>", False
                     )
     else:
-        player.mcclient.chat(chat_ch.Content)
+        changed = transform_chat(chat_ch.Content, player)
+        if changed is not None:
+            player.mcclient.chat(changed)
 
 
 add_event(proto.common.ePBMsgCode.PB_CHAT_CH, on_recv)

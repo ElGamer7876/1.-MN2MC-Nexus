@@ -61,6 +61,8 @@ async def main():
     global stop_task
     logger.add("logs/{time}.log")
     config.load()
+    from mn2mc.nexus.plugins import load_plugins
+    load_plugins(config.nexus.plugins)
     prepare_dependencies()
     if config.debug:
         protobuf_parser.init()
