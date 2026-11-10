@@ -1,0 +1,21 @@
+name: Worker unit tests
+on:
+  push:
+    branches: [web]
+    paths:
+      - "worker/**"
+      - ".github/workflows/worker-tests.yml"
+  pull_request:
+    paths:
+      - "worker/**"
+      - ".github/workflows/worker-tests.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -r worker/requirements.txt pytest httpx
+      - run: cd worker && python -m pytest -q tests
