@@ -1,0 +1,39 @@
+name: Docker and static website smoke test
+on:
+  push:
+    branches: [web]
+    paths:
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'worker/**'
+      - 'site/**'
+      - '.github/workflows/site-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate frontend JavaScript
+        run: node --check site/app.js
+      - name: Build the same Dockerfile Hostly should run
+        run: docker build -t mn2mc-nexus-web .
+      - name: Start without database and verify routes
+        shell: bash
+        run: |
+          docker run --name nexus-smoke -d -p 127.0.0.1:18080:8080 mn2mc-nexus-web
+          trap 'docker logs nexus-smoke; docker rm -f nexus-smoke' EXIT
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:18080/api/health >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:18080/ | grep -q 'MN2MC-Nexus'
+          curl --fail --silent http://127.0.0.1:18080/styles.css >/dev/null
+          curl --fail --silent http://127.0.0.1:18080/app.js >/dev/null
+          curl --fail --silent http://127.0.0.1:18080/api/regions | grep -q 'usz'
+          test "$(curl --silent -o /dev/null -w '%{http_code}' http://127.0.0.1:18080/api/rooms)" = "503"
