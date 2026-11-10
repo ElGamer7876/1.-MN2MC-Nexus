@@ -9,11 +9,14 @@ from __future__ import annotations
 import asyncio
 import hmac
 import os
+from pathlib import Path
 from contextlib import asynccontextmanager
 from typing import Literal
 
 import aiomysql
-from fastapi import Depends, FastAPI, Header, HTTPException, Query
+from fastapi import APIRouter, Depends, FastAPI, Header, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
 REGION_CODES = frozenset(("overseas", "usz", "hkz", "jpz"))
@@ -81,10 +84,20 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Expose only public read-only endpoints to the GitHub Pages frontend.
+app.add_middleware(CORSMiddleware, allow_origins=["https://elgamer7876.github.io"], allow_methods=["GET"], allow_headers=[])
+api = APIRouter(prefix="/api")
+
+@api.get("/")
+async def api_root():
+    return {"service": "MN2MC-Nexus Worker", "endpoints": ["/api/health", "/api/regions", "/api/rooms"]}
+
+@api.get("/health")
 @app.get("/health")
 async def health():
     return {"status": "ok", "database_configured": app.state.pool is not None}
 
+@api.get("/regions")
 @app.get("/regions")
 async def regions():
     return {
@@ -93,12 +106,13 @@ async def regions():
         "note": "These regions are candidate configurations; routing/login is not validated.",
     }
 
+@api.get("/rooms")
 @app.get("/rooms")
 async def rooms(region: str | None = Query(default=None), limit: int = Query(default=100, ge=1, le=500)):
     if region is not None:
         region = validate_region(region)
     pool = get_pool(app)
-    query = ("SELECT region, room_id, account_alias, players, capacity, status "
+    query = ("SELECT region, room_id, players, capacity, status "
              "FROM rooms")
     params = []
     if region is not None:
@@ -111,6 +125,7 @@ async def rooms(region: str | None = Query(default=None), limit: int = Query(def
             await cur.execute(query, tuple(params))
             return {"rooms": await cur.fetchall()}
 
+@api.put("/rooms/{region}/{room_id}", dependencies=[Depends(require_admin)])
 @app.put("/rooms/{region}/{room_id}", dependencies=[Depends(require_admin)])
 async def upsert_room(region: str, room_id: str, update: RoomUpdate):
     region = validate_region(region)
@@ -138,3 +153,9 @@ async def upsert_room(region: str, room_id: str, update: RoomUpdate):
             await conn.rollback()
             raise
     return {"region": region, "room_id": room_id, **update.model_dump()}
+
+
+app.include_router(api)
+# Mount static files last; keep /api/* for worker routes.
+SITE_DIR = Path(__file__).resolve().parents[2] / "site"
+app.mount("/", StaticFiles(directory=str(SITE_DIR), html=True), name="site")

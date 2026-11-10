@@ -1,5 +1,7 @@
 # MN2MC-Nexus
 
+Website (when deployed): https://git.hostlyus.com/ · GitHub Pages alternative: https://elgamer7876.github.io/1.-MN2MC-Nexus/ · Worker API: https://git.hostlyus.com/api/
+
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 **An extensible Mini World–Minecraft protocol bridge for third-party mods, regional routing and future multiplayer networks.**

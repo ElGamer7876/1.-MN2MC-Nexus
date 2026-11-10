@@ -35,3 +35,9 @@ MySQL stores *account aliases*, not passwords or game tokens. The unique(region,
 ## Deployment notes
 
 For hosts with only 0.5 vCPU and 4 GB RAM, keep worker count at 1, MySQL connection pool at 3 and throttle upstream publishers. Monitor CPU usage and memory; shared providers may suspend idle applications. Full region login and real Global room creation must be implemented and verified separately, then connected to this status API.
+
+## Hostly deployment: fix for Nothing to run
+
+Do not run the upstream Minecraft Node.js package as a website. Select branch web from repository root and choose Dockerfile/Docker build instead of Node.js autodetection. The Dockerfile installs worker/requirements.txt and serves site/ at / and the FastAPI service under /api/. It honors PORT (default 8080).
+
+Expected routes after deployment: https://git.hostlyus.com/, https://git.hostlyus.com/api/, /api/health, /api/regions and /api/rooms. GitHub Pages alternative: https://elgamer7876.github.io/1.-MN2MC-Nexus/ . Select Settings > Pages > Source: GitHub Actions. Keep MySQL and API token secrets within Hostly; never put them in browser code.

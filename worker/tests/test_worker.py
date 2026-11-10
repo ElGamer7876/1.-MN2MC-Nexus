@@ -22,3 +22,14 @@ def test_room_reads_fail_closed_without_database(monkeypatch):
     monkeypatch.delenv("MYSQL_HOST", raising=False)
     with TestClient(app) as client:
         assert client.get("/rooms").status_code == 503
+
+
+def test_site_and_api_prefix(monkeypatch):
+    monkeypatch.delenv("MYSQL_HOST", raising=False)
+    with TestClient(app) as client:
+        assert client.get("/").status_code == 200
+        assert "MN2MC-Nexus" in client.get("/").text
+        assert client.get("/api/").status_code == 200
+        assert client.get("/api/health").status_code == 200
+        assert "usz" in client.get("/api/regions").json()["candidates"]
+        assert client.get("/api/rooms").status_code == 503
