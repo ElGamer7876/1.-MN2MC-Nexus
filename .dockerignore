@@ -1,0 +1,14 @@
+.git
+.github
+.vscode
+mn2mc
+node_modules
+.venv
+**/.venv
+**/__pycache__
+**/*.pyc
+**/.env
+**/.env.*
+**/config.yaml
+**/s2_session.json
+**/*.log

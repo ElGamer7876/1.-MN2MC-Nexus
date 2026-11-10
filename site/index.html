@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0c1421">
+<meta name="description" content="MN2MC-Nexus is an experimental Mini World–Minecraft bridge with regional routing, community extensions, and room network tools.">
+<meta property="og:title" content="MN2MC-Nexus | Connect worlds. Build networks.">
+<meta property="og:description" content="Open-source modular protocol bridge and regional room tools.">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+<title>MN2MC-Nexus | Connect Worlds. Build Networks.</title>
+<script defer src="./app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap nav">
+  <a class="brand" href="#home"><span class="logo">N<span>↔</span></span>MN2MC<span class="brand-accent">-Nexus</span></a>
+  <nav aria-label="Main navigation"><a href="#features" data-t="navFeatures">Features</a><a href="#regions" data-t="navRegions">Regions</a><a href="#rooms" data-t="navRooms">Rooms</a><a href="#deploy" data-t="navDeploy">Deploy</a></nav>
+  <div class="top-actions"><button type="button" class="lang" id="language" aria-label="Change language">中文</button><a class="github-link" href="https://github.com/ElGamer7876/1.-MN2MC-Nexus" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+</div></header>
+<main id="main">
+<section id="home" class="hero wrap">
+  <div><div class="kicker"><span class="signal"></span><span data-t="eyebrow">OPEN SOURCE · EXPERIMENTAL</span></div><h1 data-t="heroTitle">Connect worlds.<br><em>Build networks.</em></h1><p class="lead" data-t="heroCopy">A modular Mini World–Minecraft protocol bridge, designed for adapters, community mods and future multiplayer networks.</p><div class="actions"><a class="primary" href="https://github.com/ElGamer7876/1.-MN2MC-Nexus" target="_blank" rel="noopener noreferrer"><span data-t="source">Explore the source</span> ↗</a><a class="secondary" href="#rooms"><span data-t="dashboard">Room dashboard</span> ↓</a></div><p class="disclaimer" data-t="experimental">Development preview: Global 1.7.15 authentication, automatic room creation, and cross-region syncing remain unverified.</p></div>
+  <div class="bridge" aria-label="Conceptual Mini World to Nexus to Minecraft bridge"><div class="grid-overlay"></div><div class="node"><small>MINI</small><strong>WORLD</strong></div><div class="beam"></div><div class="node middle"><small>MN2MC</small><strong>NEXUS</strong></div><div class="beam"></div><div class="node"><small>MINECRAFT</small><strong>JAVA</strong></div><div class="bridge-label">ADAPTERS · TRANSLATION · NETWORKS</div></div>
+</section>
+<section id="features" class="section wrap"><div class="heading"><div><span class="overline" data-t="platform">THE PLATFORM</span><h2 data-t="featuresTitle">Built to be extended.</h2></div><p data-t="featuresLead">Keep the original translation engine, add modular capabilities, and work toward server-network interoperability.</p></div><div class="features">
+ <article class="panel"><div class="icon">◇</div><h3 data-t="f1">Protocol translation</h3><p data-t="f1d">The original China 1.58.0 to Minecraft Java 1.21.11 bridge is retained.</p><span class="chip green" data-t="upstream">Existing upstream</span></article>
+ <article class="panel"><div class="icon">⧉</div><h3 data-t="f2">Extension hooks</h3><p data-t="f2d">Opt-in chat filters and numeric block mapping overrides for trusted local Python modules.</p><span class="chip green" data-t="available">Implemented module</span></article>
+ <article class="panel"><div class="icon">⬡</div><h3 data-t="f3">Multiplayer networks</h3><p data-t="f3d">Room capacity planning, regional candidates and a MySQL-backed status worker.</p><span class="chip" data-t="development">In development</span></article>
+</div></section>
+<section id="regions" class="section wrap"><div class="heading"><div><span class="overline" data-t="global">GLOBAL REGIONS</span><h2 data-t="regionsTitle">Regional discovery.</h2></div><p data-t="regionsLead">Region-to-country assignments and endpoints are maintainer-supplied candidates, not verified official login services.</p></div><div class="regions">
+  <article class="panel region"><span class="region-label">OVERSEAS</span><div class="region-symbol">◎</div><h3 data-t="int">International</h3><code>openroom.miniworldgame.com</code></article>
+  <article class="panel region"><span class="region-label">USZ</span><div class="region-symbol">◇</div><h3 data-t="us">United States · Mexico</h3><code>openroom-usz.miniworldgame.com</code></article>
+  <article class="panel region"><span class="region-label">HKZ</span><div class="region-symbol">⌘</div><h3 data-t="hk">Hong Kong · Vietnam</h3><code>openroom-hkz.miniworldgame.com</code></article>
+  <article class="panel region"><span class="region-label">JPZ</span><div class="region-symbol">✧</div><h3 data-t="jp">Japan</h3><code>openroom-jpz.miniworldgame.com</code></article>
+</div><p class="note" data-t="regionsNote">Independent/unverified areas: Russia, Brazil and Europe excluding Spain. An account from each selected region is required. Auto-select is not auto-login.</p></section>
+<section id="rooms" class="section wrap"><div class="heading dashboard-heading"><div><span class="overline" data-t="roomStatus">ROOM STATUS</span><h2 data-t="roomTitle">Network overview.</h2></div><span class="api-badge"><span id="apiLight"></span><span id="apiStatus" role="status">Connecting to API…</span></span></div>
+ <div class="stats"><div class="stat"><span data-t="registered">Registered rooms</span><strong id="roomCount">—</strong></div><div class="stat"><span data-t="players">Reported players</span><strong id="playerCount">—</strong></div><div class="stat"><span data-t="slots">Available slots</span><strong id="slotCount">—</strong></div></div>
+ <div class="panel registry"><div class="registry-head"><h3 data-t="registry">Room registry</h3><div class="filters"><label for="filter" data-t="filter">Region</label><select id="filter"><option value="" data-t="all">All regions</option><option value="overseas">Overseas</option><option value="usz">USZ</option><option value="hkz">HKZ</option><option value="jpz">JPZ</option></select><button type="button" id="refresh" data-t="refresh">Refresh</button></div></div><div id="roomList" aria-live="polite" class="room-list"><p class="empty" data-t="loading">Loading API data…</p></div><p class="note pad" data-t="roomNote">Counts come from authorized room operators, not directly from the game. 40 players per room is a planning limit.</p></div>
+</section>
+<section id="deploy" class="section wrap"><div class="heading"><div><span class="overline" data-t="structure">INFRASTRUCTURE</span><h2 data-t="deployTitle">One API. Two frontends.</h2></div><p data-t="deployLead">The main Hostly site serves FastAPI and the frontend. GitHub Pages offers a static alternative using the same read-only API.</p></div><div class="deploy-grid">
+ <a class="panel deploy-card" href="https://git.hostlyus.com/" target="_blank" rel="noopener noreferrer"><span class="icon">◈</span><small data-t="mainSite">MAIN SITE</small><strong>git.hostlyus.com</strong><span data-t="mainSub">Site and FastAPI runtime</span></a>
+ <a class="panel deploy-card" href="https://git.hostlyus.com/api/health" target="_blank" rel="noopener noreferrer"><span class="icon">⌁</span><small data-t="api">SHARED API</small><strong>git.hostlyus.com/api/</strong><span data-t="apiSub">MySQL room status</span></a>
+ <a class="panel deploy-card" href="https://elgamer7876.github.io/1.-MN2MC-Nexus/" target="_blank" rel="noopener noreferrer"><span class="icon">↗</span><small data-t="alternative">ALTERNATIVE</small><strong>GitHub Pages</strong><span data-t="ghSub">Static mirror, same API</span></a>
+</div></section>
+<section class="cta wrap"><h2 data-t="cta">Explore the source. Help shape the bridge.</h2><p data-t="ctaText">Experimental and MIT licensed. Follow development and contribute compatible adapters.</p><div class="actions"><a class="primary" href="https://github.com/ElGamer7876/1.-MN2MC-Nexus" target="_blank" rel="noopener noreferrer">GitHub Repository ↗</a><a class="secondary" href="https://github.com/ElGamer7876/1.-MN2MC-Nexus/blob/main/docs/REGIONS.md" target="_blank" rel="noopener noreferrer" data-t="docs">Regional documentation ↗</a></div></section>
+</main>
+<footer><div class="wrap footer"><b>MN2MC-Nexus</b><span data-t="footer">Unofficial MIT-licensed fork. Not affiliated with the game's publishers.</span><a href="https://github.com/ReYueY1ng/MN2MC" target="_blank" rel="noopener noreferrer">Upstream ↗</a></div></footer>
+</body></html>
