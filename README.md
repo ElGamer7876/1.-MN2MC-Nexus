@@ -1,107 +1,59 @@
-# MN2MC
+# MN2MC-Nexus
 
-迷你世界转译代理，用于连接 Minecraft Java 版 1.21.11 服务器。  
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-> [!CAUTION]
-> 本工具通过协议翻译将 Mini World 操作映射到 Minecraft 协议包，行为可能与原版 MC 客户端存在差异，可能触发 MC 服务端反作弊检测，导致封号。请自行评估风险。
+**An extensible Mini World–Minecraft protocol bridge for third-party mods, regional routing and future multiplayer networks.**
 
-## 支持版本
+> **Experimental fork of [ReYueY1ng/MN2MC](https://github.com/ReYueY1ng/MN2MC).** The existing translation code targets Mini World China **1.58.0** and Minecraft Java **1.21.11**. Mini World Global **1.7.15**, regional login, automatic remote room creation, cross-room syncing and Velocity networking have **not been verified or implemented end-to-end**.
 
-迷你世界 1.58.0 / Minecraft 1.21.11
+## What Nexus adds
 
-## 平台支持
+- Keeps upstream chat, block, inventory, item, entity, movement and session handlers.
+- Opt-in hooks for outgoing chat and numeric block-ID mappings. Third-party mods need explicit adapters and version-specific testing.
+- Account-aware region discovery: examines eligible regions without automatically signing in or copying credentials between regions.
+- Per-region capacity planning: one account alias per room, up to **40 players per room**. When full, an optional room provider can allocate the next unused account **of that same region**. The library never generates accounts or bypasses authorization.
+- Separate MySQL worker development in the [web branch](../../tree/web); server status, regional capacities and network coordination are goals, not a deployed production service.
 
-本项目基于 Python 和 Node.js，支持多平台：
+## Global region choices (proposed)
 
-| 平台 | 支持状态 | 说明 |
-|------|----------|------|
-| **Linux** | ✅ 完全支持 | 推荐平台，支持所有功能（包括 KREN 共享内存加速） |
-| **Windows** | ✅ 支持 | 基本功能可用，KREN 使用 pipe 替代 shm |
-| **macOS** | ✅ 支持 | 基本功能可用，KREN 不支持（自动回退到 TCP） |
+| Region | Room endpoint candidate | Suggested location/language |
+|---|---|---|
+| Overseas | openroom.miniworldgame.com | International |
+| USZ | openroom-usz.miniworldgame.com | United States (English), Mexico (Spanish) |
+| HKZ | openroom-hkz.miniworldgame.com | Hong Kong (Chinese), Vietnam (Vietnamese) |
+| JPZ | openroom-jpz.miniworldgame.com | Japan (Japanese) |
+| Independent (no verified endpoints) | Unavailable | Russia, Brazil, Europe excluding Spain |
 
+These are **maintainer-provided hypotheses**, not proven official geographic assignments or login endpoints. Each selected region **requires an account belonging to that region**. In auto mode, the first reachable region with an existing account is selected, but **login remains a separate user-authorized operation**. Other independent regions cannot be used until their real endpoints are verified. The eight room/auth host candidates and full details appear in [docs/REGIONS.md](docs/REGIONS.md).
 
-## 已实现功能
+## When a 40-player room is full
 
-- [x] 聊天
-- [x] 慢速区块转换（先发空区块，后发方块包）
-- [x] 方块映射（基础）
-- [x] 移动
-- [x] 方块操作
-- [x] 物品映射（基础）
-- [x] 背包
-- [x] 实体（基础）
-- [x] 快速区块转换（直接构建区块包）
-- [x] 光照（未完全测试）
-- [x] 创建房间
-- [x] 打洞直连（好像只能本地？）
-- [x] 代理转发
-- [ ] 自定义 UI
+The independent RoomPool module plans **one room per account**, separately for each region:
 
-## 使用方法
+| Example region | Configured accounts | Max planned rooms | Max planned players |
+|---|---:|---:|---:|
+| USZ | 3 | 3 | 120 |
+| HKZ | 2 | 2 | 80 |
+| JPZ | 1 | 1 | 40 |
 
-请确保已安装 Python 3.13+ 和 Node.js。
+A real room is created **only** when an authorized, tested room-creation callback is configured. Until Global 1.7.15 login and hosting APIs are validated, this is capacity orchestration, not an active automatic room host. Separate rooms **do not automatically share maps, inventory, chat or progression**. Multiple-account use must comply with game terms.
 
-### 安装依赖
+## Installation of existing China bridge
 
-1. 安装 Python 依赖：
-```bash
-pip install -r requirements.txt
-```
+Requires Python 3.13+, Node.js and upstream dependencies.
 
-2. 安装 Node.js 依赖（可选）：
+    python -m pip install -r requirements.txt
+    npm install
+    python main.py
 
-```bash
-npm install minecraft-protocol prismarine-chat prismarine-block prismarine-chunk vec3 msgpackr prismarine-item prismarine-registry
-```
+The original server and proxy setup is kept in [upstream Chinese README](docs/UPSTREAM_README.zh-CN.md). On first startup, config.yaml is generated. The Nexus options under the nexus section include region_mode, region_accounts (alias lists, never passwords), auto_expand_rooms, room_capacity and plugins. Only trusted local Python plugin module names should be added to plugins; extensions are **not sandboxed**. See [example](examples/nexus_chat_and_blocks.py).
 
-3. 安装 KREN 共享内存 IPC（可选，需要 Rust 工具链）：
+## Development status and safety
 
-```bash
-pip install kren  # Python 绑定
-npm install @pawanxz/kren  # Node.js 原生绑定
-```
+- Region selector, room pool and opt-in chat/block mapping hooks: implemented as Python modules.
+- Global login and regional network connectivity probes: not implemented; host and protocol verification pending.
+- Production auto-spawn of Global rooms and multi-server state synchronization: not implemented; audited regional sessions and server authorization required.
+- MySQL worker: maintained on the web branch.
+- Compliance: avoid credential sharing, CAPTCHA or ban evasion, abuse of multiple accounts and unauthorized game-server access.
 
-如果安装 KREN 失败，或者 Node.js 报错（找不到文件），手动编译安装：
-
-```bash
-git clone https://github.com/Cintu07/kren.git
-cd kren
-pip install ./kren-python # Python 绑定
-cd kren-node && cargo build --release # Node.js 原生绑定（从源码编译）
-```
-
-KREN 启用后区块数据通过共享内存传输（~100ns），否则使用 TCP 回退（~10µs）。在 `config.yaml` 中设置 `chunk_transport: kren` 强制启用，或保持 `auto` 自动检测。
-
-### 启动代理
-
-```bash
-python main.py
-```
-
-### 进入代理
-
-目前有两种方式：
-
-#### 中间人替换
-
-只需将 http://cs-gsmgr.mini1.cn/v2/room/get 响应中的 ip 和 port 替换为代理的地址和端口即可。
-
-**Linux 示例：**
-
-```bash
-mitmdump --mode local:wineserver -s tools/mitm.py
-```
-
-**Windows / macOS：**
-
-需要单独配置 mitmproxy 或使用其他方式替换响应。
-
-在迷你世界里面选择一个地图（最好是云服地图），点击"联机"即可进入。
-
-#### 创建房间
-
-下载 [raknet_proxy](https://github.com/ReYueY1ng/raknet-proxy)（macOS 需要手动构建），重命名为 `raknet-proxy` (Linux / macOS) / `raknet-proxy.exe` (Windows) ，放进 tools 文件夹里
-
-将 config.yaml 内的 auth 子项填完，host_to_room_server 改为 true 即可创建房间
-
-启动代理后在联机大厅搜索迷你号，即可直接进入
+**MIT License.** Preserve the original ReYueY1ng 2026 copyright and notices. MN2MC-Nexus is an unofficial independent fork; the game may apply anti-cheat and service restrictions.
