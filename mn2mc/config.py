@@ -41,6 +41,11 @@ nexus:
   auto_expand_rooms: false # Requires authorized verified room provider
   room_capacity: 40
   plugins: [] # Trusted local modules only
+  runtime:
+    mode: global # Default. Other modes: china, both
+    global_port: 11155
+    china_port: 11156
+    global_client_version_code: null # Must be verified from Global network protocol
 
 debug: false
 
@@ -82,12 +87,20 @@ class MCConfig(BaseModel):
     kren_buffer_size: int = Field(default=10485760, ge=1024, le=104857600)
 
 
+class RuntimeConfig(BaseModel):
+    mode: Literal["global", "china", "both"] = "global"
+    global_port: int = Field(default=11155, ge=1, le=65535)
+    china_port: int = Field(default=11156, ge=1, le=65535)
+    global_client_version_code: int | None = Field(default=None, ge=1, le=4294967295)
+
+
 class NexusConfig(BaseModel):
     region_mode: Literal["auto", "overseas", "usz", "hkz", "jpz"] = "auto"
     region_accounts: dict[str, list[str]] = Field(default_factory=dict)
     auto_expand_rooms: bool = False
     room_capacity: int = Field(default=40, ge=1, le=40)
     plugins: list[str] = Field(default_factory=list)
+    runtime: RuntimeConfig = Field(default_factory=RuntimeConfig)
 
 
 class AppConfig(BaseModel):
