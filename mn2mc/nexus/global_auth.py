@@ -37,8 +37,9 @@ def login_with_retries(authenticator: Authenticator, uid: int, region: str, *,
         raise GlobalAuthUnavailable("No verified Global login provider. Password NOT requested.")
     if type(uid) is not int or uid <= 0:
         raise ValueError("Invalid UID")
-    if region not in {"overseas", "usz", "hkz", "jpz"}:
-        raise ValueError("Unknown region")
+    from mn2mc.nexus.regions import REGIONS
+    if region not in REGIONS:
+        raise ValueError("Unknown candidate region")
     if not 1 <= max_attempts <= 5:
         raise ValueError("Invalid maximum attempts")
     for attempt in range(1, max_attempts + 1):

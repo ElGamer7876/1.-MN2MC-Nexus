@@ -56,6 +56,7 @@ def test_interactive_validation_and_paper_stable():
     items = iter(["invalid", "hkz"])
     assert ask_region(lambda _: next(items)) == "hkz"
     assert ask_mode(lambda _: "y") == "both"
+    assert ask_mode(lambda _: "") == "china"
     response = [{"channel": "STABLE", "downloads": {"server:default": {"url": "https://fill-data.papermc.io/test.jar"}}}]
     assert select_build(response)[0].endswith("test.jar")
     with pytest.raises(RuntimeError):

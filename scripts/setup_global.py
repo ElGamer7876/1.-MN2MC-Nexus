@@ -1,57 +1,59 @@
 #!/usr/bin/env python3
-"""Configure account UID and region; never request passwords without verified auth."""
+"""China-first interactive setup with explicit opt-in Global 1.7.15 BETA."""
 import os
 from pathlib import Path
-import mn2mc.config as config
 
-REGIONS = ("overseas", "usz", "hkz", "jpz")
+import mn2mc.config as config
+from mn2mc.nexus.regions import REGIONS
 
 def ask_uid(input_fn=input):
     while True:
-        value = input_fn("Mini World Global UID: ").strip()
+        value = input_fn("Mini World Global BETA UID: ").strip()
         if value.isdecimal() and 0 < int(value) < 2**63:
             return int(value)
-        print("Invalid UID; please enter positive digits.")
+        print("Invalid UID; enter positive digits.")
 
 def ask_region(input_fn=input):
-    print("Regions: overseas / usz / hkz / jpz")
-    print("These regions are candidates; account routing has not been officially verified.")
+    print("Global BETA candidate regions: " + " / ".join(REGIONS))
+    print("Hostnames come from archived client XML; login/region eligibility NOT verified.")
     while True:
-        choice = input_fn("Account region [usz]: ").strip().lower() or "usz"
+        choice = input_fn("Your account's region code [usz]: ").strip().lower() or "usz"
         if choice in REGIONS:
             return choice
-        print("Choose overseas, usz, hkz or jpz.")
+        print("Choose a listed region code, not a country name.")
 
 def ask_mode(input_fn=input):
     while True:
-        choice = input_fn("Also enable China 1.58.0? [y/N] ").strip().lower()
-        if choice in ("", "n", "no"):
-            return "global"
-        if choice in ("y", "yes"):
+        choice = input_fn("Enable experimental Mini World Global 1.7.15 BETA too? [y/N] ").strip().lower()
+        if choice in ("", "no", "n"):
+            return "china"
+        if choice in ("yes", "y"):
             return "both"
         print("Answer y or n.")
 
 def main():
     if os.geteuid() == 0:
         raise SystemExit("Do not run as root")
-    print("Mini World Global 1.7.15 setup")
-    uid = ask_uid()
-    region = ask_region()
-    edition = ask_mode()
+    print("=== MN2MC-Nexus: China 1.58.0 (main) + optional Global 1.7.15 BETA ===")
+    mode = ask_mode()
     config.load()
-    config.nexus.region_mode = region
-    config.nexus.region_accounts[region] = [str(uid)]
-    config.nexus.runtime.mode = edition
-    config.nexus.auto_expand_rooms = False
-    config.mini.server.host_to_room_server = False
+    config.nexus.runtime.mode = mode
+    config.nexus.runtime.global_beta_enabled = mode == "both"
+    if mode == "both":
+        uid = ask_uid()
+        region = ask_region()
+        config.nexus.region_mode = region
+        config.nexus.region_accounts[region] = [str(uid)]
+        config.nexus.auto_expand_rooms = False
+        print("BETA UID and region stored locally as aliases, no authentication attempted.")
+    else:
+        print("China-only selected; no Global UID or password required.")
     config.save()
     Path("config.yaml").chmod(0o600)
-    print("Local config.yaml saved with 0600 permissions.")
-    print(f"UID {uid} in {region}. Edition: {edition}.")
-    print("Global login is NOT IMPLEMENTED; no password was requested, stored or sent.")
-    print("Use your OFFICIAL Mini World Global client to authenticate for now.")
-    print("The prepared auth interface retries confirmed wrong passwords up to three times.")
-    print("The local UDP listener cannot yet create or register Global rooms.")
+    print("Settings saved to private config.yaml (0600).")
+    print("China: UDP 11155 (default). Global BETA: UDP 11156 (optional).")
+    print("Global password login, public room creation and playable crossplay are NOT validated.")
+    print("No Global password was requested or transmitted.")
 
 if __name__ == "__main__":
     main()

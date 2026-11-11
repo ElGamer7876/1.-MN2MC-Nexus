@@ -1,4 +1,4 @@
-"""Run Global 1.7.15 by default, optionally China 1.58 or both."""
+"""Run the proven China baseline by default; Global 1.7.15 is explicit BETA."""
 from __future__ import annotations
 import argparse
 import asyncio
@@ -12,6 +12,7 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--mode", choices=("global", "china", "both"))
     p.add_argument("--port", type=int, help="Override one edition's local UDP port")
     p.add_argument("--dry-run", action="store_true", help="Print plan without starting a listener")
+    p.add_argument("--list-regions", action="store_true", help="List research-only Global endpoint candidates (offline)")
     return p
 
 def get_plans(mode, runtime, port_override=None):
@@ -25,7 +26,7 @@ def get_plans(mode, runtime, port_override=None):
     cp = port_override if mode == "china" and port_override is not None else runtime.china_port
     if mode == "both":
         validate_dual_ports(gp, cp)
-    selected = ("global", "china") if mode == "both" else (mode,)
+    selected = ("china", "global") if mode == "both" else (mode,)
     return [plan_edition(edition, gp, cp, runtime.global_client_version_code) for edition in selected]
 
 def run_both(plans) -> int:
@@ -61,7 +62,21 @@ def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     import mn2mc.config as config
     config.load()
-    mode = args.mode or config.nexus.runtime.mode
+    if args.list_regions:
+        from mn2mc.nexus.regions import REGIONS
+        print("Global 1.7.15 BETA: UNVERIFIED candidate hosts from community client XML")
+        for code, region in REGIONS.items():
+            print(f"  {code.upper():10s} room={region.room_host}:{region.room_port} "
+                  f"account={region.auth_host}:{region.auth_port} "
+                  f"source={region.source_file}")
+        print("No connection or authentication was attempted.")
+        return 0
+    runtime = config.nexus.runtime
+    # Old files may still contain mode=global; do NOT silently enable BETA.
+    if args.mode is None and runtime.mode != "china" and not runtime.global_beta_enabled:
+        print("Saved experimental mode is disabled. Starting China instead. "
+              "Enable BETA in the setup wizard or pass --mode global/both.", flush=True)
+    mode = args.mode or (runtime.mode if runtime.global_beta_enabled else "china")
     try:
         editions = get_plans(mode, config.nexus.runtime, args.port)
     except ValueError as exc:
@@ -71,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {edition.edition}: Mini World {edition.mini_version}, "
               f"UDP {edition.port}, {edition.status}", flush=True)
     if any(edition.edition == "global" for edition in editions):
-        print("WARNING: Global 1.7.15 is an experimental local listener reusing "
+        print("WARNING: Global 1.7.15 is BETA and uses an experimental local listener reusing "
               "UNVERIFIED China 1.58 Protobuf handlers. This is NOT validated crossplay "
               "or regional login/room hosting.", flush=True)
     if args.dry_run:
