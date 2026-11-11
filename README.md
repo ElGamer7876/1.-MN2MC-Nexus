@@ -1,8 +1,6 @@
 # MN2MC-Nexus
 
-**CachyOS Global-first installer:** bash install-cachyos.sh. See [installer guide](docs/CACHYOS_INSTALLER.md). Configures UID/region and optional China bridge. Global password authentication is unavailable until its protocol is verified; the installer never requests credentials it cannot validate.
-
-**Edition runtime:** Global 1.7.15 is the default *experimental* local listener (UDP 11155). Use --mode china to run the original Chinese 1.58.0 bridge (UDP 11156), or --mode both to start both independently. Use python main.py --dry-run before launching. See [edition guide](docs/EDITIONS.md). **Global is NOT verified or publicly room-hostable yet.**
+**China 1.58.0 is the main/default bridge (UDP 11155); Global 1.7.15 is an optional, unverified BETA (UDP 11156).** Run python main.py for China, --mode global for BETA, or --mode both for separate listeners. The CachyOS installer asks whether to enable Global BETA. [Edition guide](docs/EDITIONS.md) · [Research evidence](docs/GLOBAL_BETA_RESEARCH.md).
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
@@ -26,9 +24,9 @@
 | USZ | openroom-usz.miniworldgame.com | United States (English), Mexico (Spanish) |
 | HKZ | openroom-hkz.miniworldgame.com | Hong Kong (Chinese), Vietnam (Vietnamese) |
 | JPZ | openroom-jpz.miniworldgame.com | Japan (Japanese) |
-| Independent (no verified endpoints) | Unavailable | Russia, Brazil, Europe excluding Spain |
+| Additional BETA candidate codes | [Region catalog](docs/REGIONS.md) | RUZ, BRZ, GERZ, VNZ, THZ, SGPZ and others (unverified) |
 
-These are **maintainer-provided hypotheses**, not proven official geographic assignments or login endpoints. Each selected region **requires an account belonging to that region**. In auto mode, the first reachable region with an existing account is selected, but **login remains a separate user-authorized operation**. Other independent regions cannot be used until their real endpoints are verified. The eight room/auth host candidates and full details appear in [docs/REGIONS.md](docs/REGIONS.md).
+These are **maintainer-provided hypotheses**, not proven official geographic assignments or login endpoints. Each selected region **requires an account belonging to that region**. In auto mode, the first reachable region with an existing account is selected, but **login remains a separate user-authorized operation**. Additional region hostnames come from community client XML and are NOT confirmed login endpoints. See all 14 candidate pairs in [docs/REGIONS.md](docs/REGIONS.md).
 
 ## When a 40-player room is full
 
@@ -42,7 +40,7 @@ The independent RoomPool module plans **one room per account**, separately for e
 
 A real room is created **only** when an authorized, tested room-creation callback is configured. Until Global 1.7.15 login and hosting APIs are validated, this is capacity orchestration, not an active automatic room host. Separate rooms **do not automatically share maps, inventory, chat or progression**. Multiple-account use must comply with game terms.
 
-## Installation of existing China bridge
+## Installation and edition selection
 
 Requires Python 3.13+, Node.js and upstream dependencies.
 
