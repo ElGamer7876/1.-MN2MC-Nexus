@@ -1,5 +1,7 @@
 # MN2MC-Nexus
 
+**CachyOS 一键安装：** bash install-cachyos.sh。配置国际版 UID、地区、可选中国版，安装 Paper 1.21.11 本地服务器。密码登录尚未验证，安装器不收集密码。参见 [安装指南](docs/CACHYOS_INSTALLER.md)。
+
 **版本：** 默认实验性国际版 1.7.15 监听器（11155 UDP），使用 python main.py --mode china 启用中国版 1.58.0（11156 UDP），使用 python main.py --mode both 独立运行两者。参见 [说明](docs/EDITIONS.md)。国际版的实际跨游戏联机与登录仍未验证。
 
 

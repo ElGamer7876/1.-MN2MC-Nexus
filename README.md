@@ -1,5 +1,7 @@
 # MN2MC-Nexus
 
+**CachyOS installer:** bash install-cachyos.sh · [English/Chinese guide](docs/CACHYOS_INSTALLER.md). Requests Global UID, region, and optional China mode; login passwords are not collected until there is a verified Global auth provider.
+
 **Runtime modes:** Global 1.7.15 is the default experimental local listener (UDP 11155). Use python main.py --mode china for the original China 1.58.0 bridge (UDP 11156), or python main.py --mode both for both in separate processes. See [edition guide](docs/EDITIONS.md). Global gameplay and login remain unverified.
 
 

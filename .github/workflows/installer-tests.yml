@@ -1,0 +1,28 @@
+name: CachyOS Global installer tests
+on:
+  push:
+    paths:
+      - 'install-cachyos.sh'
+      - 'scripts/**'
+      - 'mn2mc/nexus/global_auth.py'
+      - 'tests/test_global_auth.py'
+      - '.github/workflows/installer-tests.yml'
+  pull_request:
+    paths:
+      - 'install-cachyos.sh'
+      - 'scripts/**'
+      - 'mn2mc/nexus/global_auth.py'
+      - 'tests/test_global_auth.py'
+      - '.github/workflows/installer-tests.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install pytest pydantic PyYAML loguru
+      - run: python -m pytest -q tests/test_global_auth.py
+      - run: bash -n install-cachyos.sh
+      - run: python -m compileall -q scripts mn2mc/nexus/global_auth.py

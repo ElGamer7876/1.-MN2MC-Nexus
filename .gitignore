@@ -370,3 +370,5 @@ archive/
 ruffcheck
 tycheck
 skins.json
+
+local-paper/
