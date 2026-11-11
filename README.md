@@ -1,5 +1,7 @@
 # MN2MC-Nexus
 
+**Edition runtime:** Global 1.7.15 is the default *experimental* local listener (UDP 11155). Use --mode china to run the original Chinese 1.58.0 bridge (UDP 11156), or --mode both to start both independently. Use python main.py --dry-run before launching. See [edition guide](docs/EDITIONS.md). **Global is NOT verified or publicly room-hostable yet.**
+
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 **An extensible Mini World–Minecraft protocol bridge for third-party mods, regional routing and future multiplayer networks.**
