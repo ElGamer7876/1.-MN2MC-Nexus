@@ -1,6 +1,15 @@
 import json
+import os
 
 from mitmproxy import http
+
+
+def _get_china_port() -> int:
+    """China listener defaults to 11156; use MN2MC_CHINA_PORT for overrides."""
+    port = int(os.getenv("MN2MC_CHINA_PORT", "11156"))
+    if not 1 <= port <= 65535:
+        raise ValueError("MN2MC_CHINA_PORT out of range")
+    return port
 
 
 def request(flow: http.HTTPFlow) -> None:
@@ -11,7 +20,7 @@ def request(flow: http.HTTPFlow) -> None:
             "aid": "10213705870553",
             "roomid": "MN2MC-MitmMode",
             "ip": "127.0.0.1",
-            "port": 11155,
+            "port": _get_china_port(),
             "room_cap": 1,
             "player_num": 0,
             "mod_url": "",
