@@ -370,3 +370,6 @@ archive/
 ruffcheck
 tycheck
 skins.json
+
+# Isolated local Paper server and test world
+local-paper/
