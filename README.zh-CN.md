@@ -1,5 +1,8 @@
 # MN2MC-Nexus
 
+**版本：** 默认实验性国际版 1.7.15 监听器（11155 UDP），使用 python main.py --mode china 启用中国版 1.58.0（11156 UDP），使用 python main.py --mode both 独立运行两者。参见 [说明](docs/EDITIONS.md)。国际版的实际跨游戏联机与登录仍未验证。
+
+
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 **支持第三方模组、区域路由与未来多人服务器网络的可扩展 Mini World–Minecraft 协议桥接项目。**

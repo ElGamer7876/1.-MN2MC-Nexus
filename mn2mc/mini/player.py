@@ -4,6 +4,7 @@ import aiorak
 from loguru import logger
 
 import mn2mc.config as config
+import mn2mc.mini
 import mn2mc.mini.auth
 import mn2mc.mini.proto as proto
 import mn2mc.utils.protobuf_parser as protobuf_parser
@@ -102,7 +103,24 @@ class MiniPlayer:
         """Main packet handling loop for the Mini World client connection."""
         try:
             async for data in self.conn:
-                mcp = MiniClientPacket(data)
+                if mn2mc.mini.version == "1.7.15":
+                    # Global has an independent experimental envelope validation.
+                    # It must never silently accept an unrecognized wire format.
+                    from mn2mc.nexus.global_protocol import (
+                        UnsupportedGlobalPacket,
+                        decode_client_packet,
+                    )
+                    try:
+                        mcp = decode_client_packet(data)
+                    except UnsupportedGlobalPacket as exc:
+                        logger.warning(
+                            "Global packet layout unsupported (bytes={}): {}",
+                            len(data),
+                            exc,
+                        )
+                        continue
+                else:
+                    mcp = MiniClientPacket(data)
                 if config.debug:
                     protobuf_parser.parse(mcp.msgcode, mcp.data)
                 await on_event(mcp.msgcode, self, mcp)
