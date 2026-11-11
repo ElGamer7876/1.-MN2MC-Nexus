@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
+umask 077
 cd -- "$(dirname -- "$0")"
 if (( EUID == 0 )); then echo "Run as regular user, not root" >&2; exit 1; fi
 for file in requirements.txt package-lock.json main.py; do
