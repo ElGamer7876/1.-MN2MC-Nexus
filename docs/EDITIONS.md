@@ -33,3 +33,9 @@ MN2MC-Nexus 默认运行实验性国际版 1.7.15 监听器（UDP 11155）。使
 可在 config.yaml 的 nexus.runtime.mode 中设置 global / china / both，配置 global_port、china_port。两个版本独立运行，不共享游戏账号、房间状态和 Protobuf 全局变量。
 
 **重要：国际版跨游戏联机尚未验证可用。** 目前国际版仅通过独立适配层实验性复用中国版 1.58.0 的消息结构，并增加严格的包头校验；实际消息 ID、登录流程、地图同步和进房方式都需要进一步测试。国际版不调用中国区 mini1.cn 的登录/创建房间 API，也不会自动在国际版大厅中创建房间。安卓 APK versionCode 不能直接当作游戏网络 cltversion。请只在授权的本地环境测试，并对调试数据脱敏处理。
+
+### China-only local interception
+
+The upstream tools/mitm.py now forwards to **UDP 11156** by default, matching the optional China profile. If you override the China port (for example with --mode china --port 12000), start mitmproxy with MN2MC_CHINA_PORT=12000 so its response targets the right listener. This tool matches only the Chinese cs-gsmgr.mini1.cn room API; it does NOT implement Mini World Global 1.7.15 room redirection.
+
+**中国区本地拦截：** tools/mitm.py 默认连接 UDP 11156。如果修改了中国版端口，请设置环境变量 MN2MC_CHINA_PORT 为相同端口。此脚本只匹配中国区接口，**不能用于国际版登录或自动创建房间**。
