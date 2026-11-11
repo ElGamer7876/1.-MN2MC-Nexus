@@ -11,6 +11,10 @@ on:
       - 'mn2mc/config.py'
       - 'tests/test_nexus_editions.py'
       - 'tests/test_global_protocol.py'
+      - 'tests/test_global_beta_regions.py'
+      - 'tests/test_global_xml.py'
+      - 'scripts/inspect_global_xml.py'
+      - 'mn2mc/nexus/regions.py'
       - '.github/workflows/edition-tests.yml'
   pull_request:
     paths:
@@ -23,6 +27,10 @@ on:
       - 'mn2mc/config.py'
       - 'tests/test_nexus_editions.py'
       - 'tests/test_global_protocol.py'
+      - 'tests/test_global_beta_regions.py'
+      - 'tests/test_global_xml.py'
+      - 'scripts/inspect_global_xml.py'
+      - 'mn2mc/nexus/regions.py'
       - '.github/workflows/edition-tests.yml'
 jobs:
   test:
@@ -33,6 +41,6 @@ jobs:
         with:
           python-version: '3.13'
       - run: python -m pip install pytest pydantic PyYAML loguru
-      - run: python -m pytest -q tests/test_nexus_editions.py tests/test_global_protocol.py
+      - run: python -m pytest -q tests/test_nexus_editions.py tests/test_global_protocol.py tests/test_global_beta_regions.py tests/test_global_xml.py
       - run: python main.py --dry-run
       - run: python main.py --mode both --dry-run

@@ -7,13 +7,13 @@ for file in requirements.txt package-lock.json main.py; do
   if [[ ! -f "$file" ]]; then echo "Missing $file; run from the repository" >&2; exit 1; fi
 done
 if [[ "$#" -gt 0 && "$1" == "--dry-run" ]]; then
-  echo "Would install Python 3.13, Node.js, dependencies, run Global wizard, optionally Paper 1.21.11."
+  echo "Would install Python 3.13, Node.js, dependencies, configure China as default and optional Global BETA, optionally Paper 1.21.11."
   echo "No Global password login can be performed without a verified API."
   exit 0
 fi
 if ! command -v pacman >/dev/null; then echo "Requires CachyOS or Arch Linux" >&2; exit 1; fi
 echo "MN2MC-Nexus CachyOS all-in-one installer"
-echo "NOTICE: Real Global 1.7.15 account login and room hosting are still unsupported."
+echo "China 1.58.0 is the default. Global 1.7.15 is an optional experimental BETA."
 read -r -p "Install required system packages using pacman? [Y/n] " yn
 if [[ ! "$yn" =~ ^[Nn]$ ]]; then
   sudo pacman -S --needed git uv nodejs npm jre21-openjdk curl jq
@@ -29,6 +29,8 @@ npm ci
 read -r -p "Download stable Paper 1.21.11 for local testing? [y/N] " yn
 if [[ "$yn" =~ ^[Yy]$ ]]; then .venv/bin/python -m scripts.install_paper; fi
 echo "Done. Test: .venv/bin/python main.py --dry-run"
-echo "Global: .venv/bin/python main.py --mode global"
+echo "China (default): .venv/bin/python main.py"
+echo "Global BETA (opt-in): .venv/bin/python main.py --mode global"
 echo "China: .venv/bin/python main.py --mode china"
-echo "Both: .venv/bin/python main.py --mode both"
+echo "Both (opt-in): .venv/bin/python main.py --mode both"
+echo "Global region candidates: .venv/bin/python main.py --list-regions"

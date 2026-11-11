@@ -4,19 +4,19 @@ from mn2mc.nexus.editions import plan_edition, apply_edition, validate_dual_port
 from mn2mc.nexus.launcher import get_plans
 from mn2mc.config import RuntimeConfig
 
-def test_global_is_default():
+def test_china_is_default():
     config = RuntimeConfig()
-    assert config.mode == "global"
-    assert [p.edition for p in get_plans(config.mode, config)] == ["global"]
+    assert config.mode == "china"
+    assert [p.edition for p in get_plans(config.mode, config)] == ["china"]
 
 def test_both_run_on_different_ports():
     plans = get_plans("both", RuntimeConfig())
-    assert [(p.edition, p.port) for p in plans] == [("global",11155),("china",11156)]
+    assert [(p.edition, p.port) for p in plans] == [("china",11155),("global",11156)]
 
 def test_do_not_forge_global_protocol_version():
     p = plan_edition("global")
     assert p.client_version_code is None
-    assert p.status == "experimental-unverified-codec"
+    assert p.status == "BETA-unverified-legacy-codec"
 
 def test_china_upstream_is_preserved():
     p = plan_edition("china")

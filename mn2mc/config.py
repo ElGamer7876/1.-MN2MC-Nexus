@@ -42,9 +42,10 @@ nexus:
   room_capacity: 40
   plugins: [] # Trusted local modules only
   runtime:
-    mode: global # Default. Other modes: china, both
-    global_port: 11155
-    china_port: 11156
+    mode: china # Default. Optional BETA: global or both
+    global_beta_enabled: false # Required for persisted Global/Both mode
+    global_port: 11156
+    china_port: 11155
     global_client_version_code: null # Must be verified from Global network protocol
 
 debug: false
@@ -88,14 +89,15 @@ class MCConfig(BaseModel):
 
 
 class RuntimeConfig(BaseModel):
-    mode: Literal["global", "china", "both"] = "global"
-    global_port: int = Field(default=11155, ge=1, le=65535)
-    china_port: int = Field(default=11156, ge=1, le=65535)
+    mode: Literal["global", "china", "both"] = "china"
+    global_beta_enabled: bool = False
+    global_port: int = Field(default=11156, ge=1, le=65535)
+    china_port: int = Field(default=11155, ge=1, le=65535)
     global_client_version_code: int | None = Field(default=None, ge=1, le=4294967295)
 
 
 class NexusConfig(BaseModel):
-    region_mode: Literal["auto", "overseas", "usz", "hkz", "jpz"] = "auto"
+    region_mode: str = "auto" # Regional candidates validated by the selector, not by official login
     region_accounts: dict[str, list[str]] = Field(default_factory=dict)
     auto_expand_rooms: bool = False
     room_capacity: int = Field(default=40, ge=1, le=40)

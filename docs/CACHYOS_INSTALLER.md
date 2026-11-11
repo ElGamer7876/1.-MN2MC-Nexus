@@ -1,20 +1,25 @@
-# CachyOS interactive installer / CachyOS 交互式安装器
+# CachyOS installer / CachyOS 安装向导
 
 ## English
 
-On the main branch, run:
+On the GitHub main branch, as your normal user (not root):
 
     bash install-cachyos.sh --dry-run
     bash install-cachyos.sh
 
-The installer prepares Python 3.13, Node.js, MN2MC-Nexus bridge dependencies and asks for a Global UID, account region and optional China 1.58.0 process. config.yaml is stored with mode 0600. Optionally download official stable Paper 1.21.11 and verify its published checksum. The local Paper server requires accepting the EULA explicitly, and offline-mode is for isolated localhost tests only.
+The installer prepares uv/Python 3.13, Node.js and dependencies, with an optional local Paper 1.21.11 download. **China 1.58.0 is the default.** The wizard asks whether to enable experimental **Global 1.7.15 BETA** too. Answer **N** for China only: no Global UID or password is requested. Answer **Y** for both China and Global in independent processes; only then enter your Global UID and candidate region code for planning.
 
-**Important:** No independently verified official Global 1.7.15 password authentication API is known. The installer therefore does NOT request a password it cannot validate. It cannot log into Global or register a public room yet. Sign in through the official game client. The code in mn2mc/nexus/global_auth.py contains the future masked password prompt, with up to three retries only on a verified invalid-password response. Network errors and rate limits do not cause automatic password retries.
+- China default: python main.py (UDP 11155).
+- Global BETA explicit: python main.py --mode global (UDP 11156).
+- Both explicit: python main.py --mode both.
+- Region metadata listing (offline): python main.py --list-regions.
 
-Do not send a password to guessed regional endpoints, upload one to GitHub or store it in Hostly. Global crossplay remains experimental.
+The installer makes config.yaml mode 0600. **Global password authentication is NOT implemented**; it does not request or transmit a password. Authenticator retry logic is for a future audited provider. Never reuse Chinese auth endpoints for a Global account.
+
+Paper is local-only and offline-mode is **not** appropriate for a public server; you must review/accept the Minecraft EULA before running it. See [EDITIONS.md](EDITIONS.md).
 
 ## 简体中文
 
-在 main 分支运行 bash install-cachyos.sh。安装器自动安装 Python 3.13、Node.js 及依赖，询问国际版 UID、账号区域以及是否启用中国版；可选安装 Paper 1.21.11 本地服务器。配置文件仅在本机保存，不保存密码。
+普通用户执行 bash install-cachyos.sh，主线默认**中国版 1.58.0（UDP 11155）**。安装器会询问是否额外启用**国际版 1.7.15 BETA（UDP 11156）**；不启用无需提供国际版 UID；启用后仅填写 UID 和地区代码，用于本地配置，并不会真实登录。
 
-**重要：** 尚未验证国际版 1.7.15 官方密码登录接口。安装器不会收集不能验证的密码，也无法真实登录国际版或发布房间。请先使用官方游戏客户端登录。已经预留密码隐藏输入和最多三次错误密码重试接口，待安全、经过验证的登录功能开发后启用。
+国际版密码 API 尚未验证，因此不采集密码；国际版真正连接和发布房间尚未实现。可选安装 Paper 1.21.11 用于受控本地试验，需自行接受 EULA。

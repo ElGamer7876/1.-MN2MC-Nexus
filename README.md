@@ -1,9 +1,6 @@
 # MN2MC-Nexus
 
-**CachyOS installer:** bash install-cachyos.sh · [English/Chinese guide](docs/CACHYOS_INSTALLER.md). Requests Global UID, region, and optional China mode; login passwords are not collected until there is a verified Global auth provider.
-
-**Runtime modes:** Global 1.7.15 is the default experimental local listener (UDP 11155). Use python main.py --mode china for the original China 1.58.0 bridge (UDP 11156), or python main.py --mode both for both in separate processes. See [edition guide](docs/EDITIONS.md). Global gameplay and login remain unverified.
-
+**China 1.58.0 is the main/default bridge (UDP 11155). Global 1.7.15 BETA (UDP 11156) is explicitly opt-in, not validated playable crossplay.** Use python main.py --mode global or --mode both for BETA. See [edition guide](docs/EDITIONS.md) and [research evidence](docs/GLOBAL_BETA_RESEARCH.md).
 
 Website (when deployed): https://git.hostlyus.com/ · GitHub Pages alternative: https://elgamer7876.github.io/1.-MN2MC-Nexus/ · Worker API: https://git.hostlyus.com/api/
 
@@ -29,9 +26,9 @@ Website (when deployed): https://git.hostlyus.com/ · GitHub Pages alternative: 
 | USZ | openroom-usz.miniworldgame.com | United States (English), Mexico (Spanish) |
 | HKZ | openroom-hkz.miniworldgame.com | Hong Kong (Chinese), Vietnam (Vietnamese) |
 | JPZ | openroom-jpz.miniworldgame.com | Japan (Japanese) |
-| Independent (no verified endpoints) | Unavailable | Russia, Brazil, Europe excluding Spain |
+| Additional BETA candidates | [Region catalog](docs/REGIONS.md) | BRZ, RUZ, GERZ, VNZ and more; unverified login |
 
-These are **maintainer-provided hypotheses**, not proven official geographic assignments or login endpoints. Each selected region **requires an account belonging to that region**. In auto mode, the first reachable region with an existing account is selected, but **login remains a separate user-authorized operation**. Other independent regions cannot be used until their real endpoints are verified. The eight room/auth host candidates and full details appear in [docs/REGIONS.md](docs/REGIONS.md).
+These are **maintainer-provided hypotheses**, not proven official geographic assignments or login endpoints. Each selected region **requires an account belonging to that region**. In auto mode, the first reachable region with an existing account is selected, but **login remains a separate user-authorized operation**. Other region hostnames are found in community client XML, but none are confirmed login endpoints. The 14 candidate host pairs are in [docs/REGIONS.md](docs/REGIONS.md).
 
 ## When a 40-player room is full
 

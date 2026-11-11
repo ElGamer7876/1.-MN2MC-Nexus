@@ -1,9 +1,6 @@
 # MN2MC-Nexus
 
-**CachyOS 一键安装：** bash install-cachyos.sh。配置国际版 UID、地区、可选中国版，安装 Paper 1.21.11 本地服务器。密码登录尚未验证，安装器不收集密码。参见 [安装指南](docs/CACHYOS_INSTALLER.md)。
-
-**版本：** 默认实验性国际版 1.7.15 监听器（11155 UDP），使用 python main.py --mode china 启用中国版 1.58.0（11156 UDP），使用 python main.py --mode both 独立运行两者。参见 [说明](docs/EDITIONS.md)。国际版的实际跨游戏联机与登录仍未验证。
-
+**中国版 1.58.0 是默认主线（UDP 11155），国际版 1.7.15 BETA 需要手动启用（UDP 11156）。** 使用 python main.py 运行中国版；--mode global 或 --mode both 选择实验性国际版。目前国际版仍未验证真实跨游戏联机。[版本说明](docs/EDITIONS.md) · [研究资料](docs/GLOBAL_BETA_RESEARCH.md)。
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
@@ -27,9 +24,9 @@
 | USZ | openroom-usz.miniworldgame.com | 美国（英语）、墨西哥（西班牙语） |
 | HKZ | openroom-hkz.miniworldgame.com | 香港（中文）、越南（越南语） |
 | JPZ | openroom-jpz.miniworldgame.com | 日本（日语） |
-| 独立区域（主机未验证） | 未知 | 俄罗斯、巴西、西班牙以外的欧洲 |
+| 新增国际版 BETA 候选区域 | [地区列表](docs/REGIONS.md) | BRZ、RUZ、GERZ、VNZ 等，均未验证 |
 
-以上地域关系由维护者提供，**不是已验证的官方登录路由**。选择某地区**需要该地区的账号**。自动模式仅能选择已经配置账号且可连接的地区；**不会替用户自动登录**。独立地区需要先核实实际服务器域名。全部八个房间/认证候选主机及详细说明见 [docs/REGIONS.md](docs/REGIONS.md)。
+以上地域关系由维护者提供，**不是已验证的官方登录路由**。选择某地区**需要该地区的账号**。自动模式仅能选择已经配置账号且可连接的地区；**不会替用户自动登录**。社区客户端 XML 中有更多候选地址，但尚无经过验证的登录实现。全部 14 对主机地址见 [docs/REGIONS.md](docs/REGIONS.md)。
 
 ## 房间满员后自动扩容
 

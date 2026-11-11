@@ -5,8 +5,8 @@ from mitmproxy import http
 
 
 def _get_china_port() -> int:
-    """China listener defaults to 11156; use MN2MC_CHINA_PORT for overrides."""
-    port = int(os.getenv("MN2MC_CHINA_PORT", "11156"))
+    """China listener defaults to upstream UDP 11155; override if needed."""
+    port = int(os.getenv("MN2MC_CHINA_PORT", "11155"))
     if not 1 <= port <= 65535:
         raise ValueError("MN2MC_CHINA_PORT out of range")
     return port

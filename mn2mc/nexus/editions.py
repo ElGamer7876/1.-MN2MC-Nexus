@@ -14,7 +14,7 @@ class EditionPlan:
     client_version_code: int | None
     status: str
 
-def plan_edition(edition: str, global_port: int = 11155, china_port: int = 11156,
+def plan_edition(edition: str, global_port: int = 11156, china_port: int = 11155,
                  global_client_version_code: int | None = None) -> EditionPlan:
     if edition not in {"global", "china"}:
         raise ValueError("Unknown game edition")
@@ -29,7 +29,7 @@ def plan_edition(edition: str, global_port: int = 11155, china_port: int = 11156
         return EditionPlan("china", CHINA_VERSION, china_port,
                            CHINA_CLIENT_VERSION_CODE, "upstream-legacy")
     return EditionPlan("global", GLOBAL_VERSION, global_port,
-                       global_client_version_code, "experimental-unverified-codec")
+                       global_client_version_code, "BETA-unverified-legacy-codec")
 
 def validate_dual_ports(global_port: int, china_port: int) -> None:
     if global_port == china_port:

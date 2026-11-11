@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
-REGION_CODES = frozenset(("overseas", "usz", "hkz", "jpz"))
+REGION_CODES = frozenset(("overseas", "usz", "hkz", "jpz", "brz", "ruz", "gerz", "vnz", "thz", "sgpz", "inaz", "twz", "ussz", "brnz"))
 INDEPENDENT_AREAS = ("russia", "brazil", "europe_except_spain")
 CREATE_SCHEMA_NOTICE = "Apply worker/schema.sql before starting the API."
 
@@ -101,9 +101,12 @@ async def health():
 @app.get("/regions")
 async def regions():
     return {
-        "candidates": ["overseas", "usz", "hkz", "jpz"],
+        "candidates": sorted(REGION_CODES),
+        "verified_login": [],
+        "default_edition": "china",
+        "global_status": "BETA_unverified",
         "independent_unverified": list(INDEPENDENT_AREAS),
-        "note": "These regions are candidate configurations; routing/login is not validated.",
+        "note": "China 1.58 is default. Global hostnames come from XML and are unverified for real account login.",
     }
 
 @api.get("/rooms")
